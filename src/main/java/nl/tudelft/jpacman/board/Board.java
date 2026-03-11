@@ -1,5 +1,6 @@
 package nl.tudelft.jpacman.board;
 
+import nl.tudelft.jpacman.level.Pellet;
 
 /**
  * A top-down view of a matrix of {@link Square}s.
@@ -90,5 +91,24 @@ public class Board {
      */
     public boolean withinBorders(int x, int y) {
         return x >= 0 && x < getWidth() && y >= 0 && y < getHeight();
+    }
+
+    /**
+     * Calculates remaining pellets on the baord
+     * @return integer number of pellets remaining
+     */
+    public int getRemainingPellets(){
+      int pellets = 0;
+        for (int x = 0; x < this.getWidth(); x++) {
+            for (int y = 0; y < this.getHeight(); y++) {
+                for (Unit unit : this.squareAt(x, y).getOccupants()) {
+                    if (unit instanceof Pellet) {
+                        pellets++;
+                    }
+                }
+            }
+        }
+        assert pellets >= 0;
+        return pellets;
     }
 }

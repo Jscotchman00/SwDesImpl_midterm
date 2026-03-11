@@ -296,20 +296,11 @@ public class Level {
      *
      * @return The amount of pellets remaining on the board.
      */
+    
     public int remainingPellets() {
         Board board = getBoard();
-        int pellets = 0;
-        for (int x = 0; x < board.getWidth(); x++) {
-            for (int y = 0; y < board.getHeight(); y++) {
-                for (Unit unit : board.squareAt(x, y).getOccupants()) {
-                    if (unit instanceof Pellet) {
-                        pellets++;
-                    }
-                }
-            }
-        }
-        assert pellets >= 0;
-        return pellets;
+        return board.getRemainingPellets();
+
     }
 
     /**
