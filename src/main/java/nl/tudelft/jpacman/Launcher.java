@@ -89,7 +89,7 @@ public class Launcher {
      * @return A new level.
      */
     public Level makeLevel() {
-        try {
+        try { //MIDTERM: Create object here instead of calling get...
             return getMapParser().parseMap(getLevelMap());
         } catch (IOException e) {
             throw new PacmanConfigurationException(

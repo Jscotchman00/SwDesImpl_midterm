@@ -1,12 +1,13 @@
 package nl.tudelft.jpacman.npc.ghost;
 
 import nl.tudelft.jpacman.board.BoardFactory;
-import nl.tudelft.jpacman.board.Square;
+//import nl.tudelft.jpacman.board.Square;
 import nl.tudelft.jpacman.level.LevelFactory;
 import nl.tudelft.jpacman.level.MapParser;
-import nl.tudelft.jpacman.npc.Ghost;
+//import nl.tudelft.jpacman.npc.Ghost;
+import nl.tudelft.jpacman.level.ParsedMap;
 
-import java.util.List;
+//import java.util.List;
 
 /**
  * A test helper utility for writing the ghost unit tests.
@@ -33,15 +34,13 @@ public final class GhostMapParser extends MapParser {
 
     //This method only supports clyde for now
     //You should add extra cases for ghosts you need.
-    @Override
-    protected void addSquare(Square[][] grid, List<Ghost> ghosts,
-                             List<Square> startPositions, int x, int y, char c) {
+    protected void addSquare(ParsedMap pMap, int x, int y, char c) {
         switch (c) {
             case 'C':
-                grid[x][y] = makeGhostSquare(ghosts, ghostFactory.createClyde());
+                pMap.getGrid()[x][y] = makeGhostSquare(pMap.getGhosts(), ghostFactory.createClyde());
                 break;
             default:
-                super.addSquare(grid, ghosts, startPositions, x, y, c);
+                super.addSquare(pMap, x, y, c);
         }
     }
 }

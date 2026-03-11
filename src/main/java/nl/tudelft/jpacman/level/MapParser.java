@@ -14,6 +14,7 @@ import nl.tudelft.jpacman.board.Square;
 import nl.tudelft.jpacman.npc.Ghost;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
+
 /**
  * Creates new {@link Level}s from text representations.
  *
@@ -64,24 +65,24 @@ public class MapParser {
     public Level parseMap(char[][] map) {
         int width = map.length;
         int height = map[0].length;
+        ParsedMap pMap = new ParsedMap(width, height);
+        //Square[][] grid = new Square[width][height];
+       // List<Ghost> ghosts = new ArrayList<>();
+       // List<Square> startPositions = new ArrayList<>();
 
-        Square[][] grid = new Square[width][height];
+        makeGrid(map, width, height, pMap);
 
-        List<Ghost> ghosts = new ArrayList<>();
-        List<Square> startPositions = new ArrayList<>();
-
-        makeGrid(map, width, height, grid, ghosts, startPositions);
-
-        Board board = boardCreator.createBoard(grid);
-        return levelCreator.createLevel(board, ghosts, startPositions);
+        //Method for Board Creator -> ParsedMap
+        Board board = boardCreator.createBoard(pMap.getGrid());
+        
+        return levelCreator.createLevel(board, pMap.getGhosts(), pMap.getStartPositions());
     }
 
-    private void makeGrid(char[][] map, int width, int height,
-                          Square[][] grid, List<Ghost> ghosts, List<Square> startPositions) {
+    private void makeGrid(char[][] map, int width, int height, ParsedMap pMap) {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 char c = map[x][y];
-                addSquare(grid, ghosts, startPositions, x, y, c);
+                addSquare(pMap, x, y, c);
             }
         }
     }
@@ -106,28 +107,28 @@ public class MapParser {
      * @param c
      *            Character describing the square type.
      */
-    protected void addSquare(Square[][] grid, List<Ghost> ghosts,
-                             List<Square> startPositions, int x, int y, char c) {
+
+    protected void addSquare(ParsedMap pMap, int x, int y, char c) {
         switch (c) {
             case ' ':
-                grid[x][y] = boardCreator.createGround();
+                pMap.getGrid()[x][y] = boardCreator.createGround();
                 break;
             case '#':
-                grid[x][y] = boardCreator.createWall();
+                pMap.getGrid()[x][y] = boardCreator.createWall();
                 break;
             case '.':
                 Square pelletSquare = boardCreator.createGround();
-                grid[x][y] = pelletSquare;
+                pMap.getGrid()[x][y] = pelletSquare;
                 levelCreator.createPellet().occupy(pelletSquare);
                 break;
             case 'G':
-                Square ghostSquare = makeGhostSquare(ghosts, levelCreator.createGhost());
-                grid[x][y] = ghostSquare;
+                Square ghostSquare = makeGhostSquare(pMap.getGhosts(), levelCreator.createGhost());
+                pMap.getGrid()[x][y] = ghostSquare;
                 break;
             case 'P':
                 Square playerSquare = boardCreator.createGround();
-                grid[x][y] = playerSquare;
-                startPositions.add(playerSquare);
+                pMap.getGrid()[x][y] = playerSquare;
+                pMap.getStartPositions().add(playerSquare);
                 break;
             default:
                 throw new PacmanConfigurationException("Invalid character at "
@@ -183,30 +184,40 @@ public class MapParser {
      * @throws PacmanConfigurationException if map is not OK.
      */
     private void checkMapFormat(List<String> text) {
-        if (text == null) {
-            throw new PacmanConfigurationException(
-                "Input text cannot be null.");
-        }
+    checkTextValidity(text);
+    checkWidthConsistency(text);
+}
 
-        if (text.isEmpty()) {
-            throw new PacmanConfigurationException(
-                "Input text must consist of at least 1 row.");
-        }
+/**
+     * HelperFunction Used with checkMapFormat, specifically checks text related exceptions.
+     * @param text Map to be checked
+     * @throws PacmanConfigurationException if map is not OK.
+     */
+private void checkTextValidity(List<String> text) {
+    if (text == null) {
+        throw new PacmanConfigurationException("Input text cannot be null.");
+    }
+    if (text.isEmpty()) {
+        throw new PacmanConfigurationException("Input text must consist of at least 1 row.");
+    }
+}
 
-        int width = text.get(0).length();
-
-        if (width == 0) {
-            throw new PacmanConfigurationException(
-                "Input text lines cannot be empty.");
-        }
-
-        for (String line : text) {
-            if (line.length() != width) {
-                throw new PacmanConfigurationException(
-                    "Input text lines are not of equal width.");
-            }
+/**
+     * HelperFunction Used with checkMapFormat, specifically checks width consistency related exceptions.
+     * @param text Map to be checked
+     * @throws PacmanConfigurationException if map is not OK.
+     */
+private void checkWidthConsistency(List<String> text) {
+    int width = text.get(0).length();
+    if (width == 0) {
+        throw new PacmanConfigurationException("Input text lines cannot be empty.");
+    }
+    for (String line : text) {
+        if (line.length() != width) {
+            throw new PacmanConfigurationException("Input text lines are not of equal width.");
         }
     }
+}
 
     /**
      * Parses the provided input stream as a character stream and passes it
@@ -259,3 +270,32 @@ public class MapParser {
         return boardCreator;
     }
 }
+
+    /*
+   OLD CODE
+     private void checkMapFormat(List<String> text) {
+        if (text == null) {
+            throw new PacmanConfigurationException(
+                "Input text cannot be null.");
+        }
+
+        if (text.isEmpty()) {
+            throw new PacmanConfigurationException(
+                "Input text must consist of at least 1 row.");
+        }
+
+        int width = text.get(0).length();
+
+        if (width == 0) {
+            throw new PacmanConfigurationException(
+                "Input text lines cannot be empty.");
+        }
+
+        for (String line : text) {
+            if (line.length() != width) {
+                throw new PacmanConfigurationException(
+                    "Input text lines are not of equal width.");
+            }
+        }
+    }
+    */
