@@ -101,7 +101,7 @@ public abstract class Unit {
      *         not occupying any square.
      */
     protected boolean invariant() {
-        return square == null || square.getOccupants().contains(this);
+        return square == null || square.containsOccupant(this);
     }
 
     /**

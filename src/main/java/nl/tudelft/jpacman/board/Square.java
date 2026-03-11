@@ -71,6 +71,16 @@ public abstract class Square {
         return ImmutableList.copyOf(occupants);
     }
 
+     /**
+     * Returns a boolean true if square contains specified occupants
+     * @param unit the specified unit being searched for.
+     *
+     * @return Returns a boolean true if square contains specified occupants
+     */
+    public boolean containsOccupant(Unit unit) {
+        return this.getOccupants().contains(unit);
+    }
+
     /**
      * Adds a new occupant to this square.
      *

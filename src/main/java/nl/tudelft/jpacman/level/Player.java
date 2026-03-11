@@ -4,6 +4,7 @@ import java.util.Map;
 
 import nl.tudelft.jpacman.board.Direction;
 import nl.tudelft.jpacman.board.Unit;
+import nl.tudelft.jpacman.npc.Ghost;
 import nl.tudelft.jpacman.sprite.AnimatedSprite;
 import nl.tudelft.jpacman.sprite.Sprite;
 
@@ -127,5 +128,16 @@ public class Player extends Unit {
      */
     public void addPoints(int points) {
         score += points;
+    }
+
+    /**
+     * Changes alive and killer fields of player when collision with ghost is detected
+     *
+     * @param ghost
+     *            The ghost that the player collided with
+     */
+    public void playerCollidedGhost(Ghost ghost){
+    this.setAlive(false);
+    this.setKiller(ghost);
     }
 }
